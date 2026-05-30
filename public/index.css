@@ -1,17 +1,29 @@
+@font-face {
+    font-family: "bio-sans-light";
+    src: url("./bio-sans-light.ttf") format('truetype');
+}
+@font-face {
+    font-family: 'bio-sans-bold';
+    src : url(./bio-sans-bold.ttf) format('truetype')
+}
+
 body{
     margin: 0;
+    position: relative;
 }
 
 
 #info{
     position: absolute;
-    top: 10px;
-    left: 415px; 
+    top: 0px;
+    right: 0px;
     width: 100%; 
     /* text-align: center; */
     z-index: 100;
     display: block;
     color: #00ff2b;
     font-size: 40px;
+    font-family: 'bio-sans-light';
+    font-weight: 400;
     
 }
