@@ -50,7 +50,7 @@ scene.add(glow)
 function animate(time) {
     renderer.render(scene, camera)
 
-    // sphere.rotation.y = time / 1000
+    sphere.rotation.y = time / 10000
 }
 
 renderer.setAnimationLoop( animate )

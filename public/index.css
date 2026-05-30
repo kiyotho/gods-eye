@@ -4,7 +4,7 @@
 }
 @font-face {
     font-family: 'bio-sans-bold';
-    src : url(./bio-sans-bold.ttf) format('truetype')
+    src : url("./bio-sans-bold.ttf") format('truetype')
 }
 
 body{
@@ -15,15 +15,30 @@ body{
 
 #info{
     position: absolute;
-    top: 0px;
-    right: 0px;
-    width: 100%; 
+    top: 20px;
+    right: 20px;
+    width: auto; 
     /* text-align: center; */
     z-index: 100;
     display: block;
-    color: #00ff2b;
-    font-size: 40px;
+    color: whitesmoke;
+    font-size: 30px;
     font-family: 'bio-sans-light';
-    font-weight: 400;
+    font-weight: 500;
     
+}
+
+#text-satellite{
+
+    color: #9A813C;
+    font-weight: 500;
+
+}
+
+#txt-record {
+    font-weight: 600;
+}
+
+#txt-record-digital{
+    font-size: 25px;
 }
