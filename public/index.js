@@ -16,11 +16,6 @@ const controls = new OrbitControls(camera, renderer.domElement)
 camera.position.set(0, 5, 10)
 controls.update()
 
-// const imageLoader = new THREE.ImageLoader() 
-// imageLoader.load('../src/earthlights1k.jpg', (image) => {
-
-// })
-
 
 const geometry = new THREE.SphereGeometry(5, 32, 32)
 const loader = new THREE.TextureLoader()

@@ -14,18 +14,24 @@ body{
 
 
 #info{
-    position: absolute;
+    
     top: 20px;
     right: 20px;
     width: auto; 
-    /* text-align: center; */
+ 
+}
+
+.text{  
+    position: absolute;
     z-index: 100;
     display: block;
-    color: whitesmoke;
+
     font-size: 30px;
     font-family: 'bio-sans-light';
     font-weight: 500;
+    color: whitesmoke;
     
+
 }
 
 #text-satellite{
@@ -35,10 +41,67 @@ body{
 
 }
 
-#txt-record {
-    font-weight: 600;
-}
 
 #txt-record-digital{
     font-size: 25px;
 }
+
+#profile{
+
+    top: 20px; 
+    left: 20px; 
+
+}
+
+#txt-build-pro{
+    font-size: 20px;
+}
+
+#txt-active{
+    font-size: 20px;
+    color: rgb(154, 1, 1);
+}
+
+#txt-name{
+    color: #9A813C;
+    font-family: 'bio-sans-bold';
+}
+
+.bold{
+    font-weight: 600;
+}
+
+.very-small{
+    font-size: 17px;
+}
+
+
+
+#txt-profile-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  width: 300px;       
+  height: 50px;      
+  box-sizing: border-box;
+}
+
+#txt-dob{ 
+    align-self: start;  
+    justify-self: start; 
+}
+
+#txt-height{ 
+    align-self: end;  
+    justify-self: start;   
+}  
+
+#txt-race{ 
+    align-self: start;    
+    justify-self: end; 
+}  
+
+#txt-weight{ 
+    align-self: end;    
+    justify-self: end;  
+}  
