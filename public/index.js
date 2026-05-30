@@ -1,12 +1,20 @@
 import * as THREE from 'three'
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000 )
+
+
+
+
 
 const renderer = new THREE.WebGLRenderer({antialias : true})
 renderer.setSize( window.innerWidth, window.innerHeight)
 document.body.appendChild( renderer.domElement )
 
+const controls = new OrbitControls(camera, renderer.domElement)
+camera.position.set(0, 5, 10)
+controls.update()
 
 // const imageLoader = new THREE.ImageLoader() 
 // imageLoader.load('../src/earthlights1k.jpg', (image) => {
@@ -48,9 +56,11 @@ const glow = new THREE.Mesh(glowGeometry, glowMaterial)
 scene.add(glow)
 
 function animate(time) {
-    renderer.render(scene, camera)
 
+    controls.update()
+    renderer.render(scene, camera)
     sphere.rotation.y = time / 10000
+
 }
 
 renderer.setAnimationLoop( animate )
