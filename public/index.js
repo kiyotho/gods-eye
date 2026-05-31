@@ -26,8 +26,6 @@ controls.update()
 
 
 
-
-
 // making earth
 const geometry = new THREE.SphereGeometry(5, 32, 32)
 const loader = new THREE.TextureLoader()
@@ -149,44 +147,49 @@ cities.forEach(city => {
 })
 
 
+const satelliteArr = []
 
 const gltfLoader = new GLTFLoader()
 
-for(const satellite of satellites){
-    gltfLoader.load(
-    './satellite/scene.gltf',
+
+gltfLoader.load(
+  './satellite/scene.gltf',
 
     (gltf) => {
 
-            const object = gltf.scene
+    for(const satellite of satellites){
 
-            const sceneRadius = (6371 + satellite.altitude) * (5 / 6371)
-            const pos = latLngToVector3(satellite.inclination, satellite.startAngle, sceneRadius)
-            object.position.copy(pos)
-            object.scale.set(0.25, 0.25, 0.25)
-            object.lookAt(0, 0, 0)
+        const object = gltf.scene.clone()
 
-            object.rotation.y = Math.PI 
-            object.rotation.z = Math.PI * 1.5
+        const sceneRadius = (6371 + satellite.altitude) * (5 / 6371)
+        const pos = latLngToVector3(satellite.inclination, satellite.startAngle, sceneRadius)
+        object.position.copy(pos)
+        object.scale.set(0.25, 0.25, 0.25)
+        object.lookAt(0, 0, 0)
+
+        object.rotation.y = Math.PI 
+        object.rotation.z = Math.PI * 1.5
+        
+        
+        scene.add(object)
+        satelliteArr.push({ mesh: object, data: satellite, currentAngle: satellite.startAngle })
+
+
+    }}, 
+
+    (xhr) => {
+
+        console.log((xhr.loaded/ xhr.total * 100) + '% loaded')
+
+    },
+    (error) => {
             
-            scene.add(object)
-
-            console.log(object)
-            console.log(pos)
-
-        }, 
-        (xhr) => {
-
-            console.log((xhr.loaded/ xhr.total * 100) + '% loaded')
-
-        },
-        (error) => {
-            
-            console.log('An error occurred while loading the gLTF:', error)
+        console.log('An error occurred while loading the gLTF:', error)
 
         }
-    )
-}
+    
+)
+
 
 
 // function to animate the scene
