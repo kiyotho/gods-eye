@@ -140,7 +140,7 @@ const cities = [
 cities.forEach(city => {
     const pos = latLngToVector3(city.lat, city.lng, 5.05)
     const dotGeometry = new THREE.SphereGeometry(0.025, 8, 15)
-    const dotMaterial = new THREE.MeshBasicMaterial({ color: '9A813C' })
+    const dotMaterial = new THREE.MeshBasicMaterial({ color: '#9A813C' })
     const dot = new THREE.Mesh(dotGeometry, dotMaterial)
     dot.position.copy(pos)
     sphere.add(dot)
@@ -170,9 +170,24 @@ gltfLoader.load(
         object.rotation.y = Math.PI 
         object.rotation.z = Math.PI * 1.5
         
-        
+        const points = []
+        for(let angle = 0; angle <= 360; angle += 1){
+            const point = latLngToVector3(satellite.inclination, angle, sceneRadius)
+            points.push(point)
+        }
+        const orbitGeometry = new THREE.BufferGeometry().setFromPoints(points)
+
+        const orbitMaterial = new THREE.LineDashedMaterial({
+            color: "#9A813C",
+            dashSize: 0.2,
+            gapSize: 0.05
+        })
+        const orbit = new THREE.Line(orbitGeometry, orbitMaterial)
+        orbit.computeLineDistances()
+
+        scene.add(orbit)
         scene.add(object)
-        satelliteArr.push({ mesh: object, data: satellite, currentAngle: satellite.startAngle })
+        satelliteArr.push({ mesh: object, data: satellite, currentAngle: satellite.startAngle, altitude: sceneRadius })
 
 
     }}, 
@@ -192,6 +207,8 @@ gltfLoader.load(
 
 
 
+let lastTime = 0
+
 // function to animate the scene
 
 function animate(time) {
@@ -199,6 +216,19 @@ function animate(time) {
     controls.update()
     renderer.render(scene, camera)
     sphere.rotation.y = ( time / 86400000 ) * 1000
+
+    const delta = time - lastTime
+    lastTime = time
+
+    for(const satellite of satelliteArr){
+
+        satellite.currentAngle += satellite.data.speed * delta
+
+        const newPos = latLngToVector3(satellite.data.inclination, satellite.currentAngle , satellite.altitude)
+
+        satellite.mesh.position.copy(newPos)
+    }
+
     stars.position.copy(camera.position)
 
 }
