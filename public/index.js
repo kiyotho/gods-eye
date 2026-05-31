@@ -157,23 +157,35 @@ for(const satellite of satellites){
     './satellite/scene.gltf',
 
     (gltf) => {
-        const object = gltf.scene
-        object.position.set(5.5 , 0 , 0)
-        object.scale.set(0.2, 0.2, 0.2)
-        object.lookAt(0, 0, 0)
-        // object.rotation.x = Math.PI / 8
-        object.rotation.y = Math.PI 
-        object.rotation.z = Math.PI * 1.5
-        
-        scene.add(object)
-    }, 
-    (xhr) => {
-        console.log((xhr.loaded/ xhr.total * 100) + '% loaded')
-    },
-    (error) => {
-        console.log('An error occurred while loading the gLTF:', error)
-    }
-)
+
+            const object = gltf.scene
+
+            const sceneRadius = (6371 + satellite.altitude) * (5 / 6371)
+            const pos = latLngToVector3(satellite.inclination, satellite.startAngle, sceneRadius)
+            object.position.copy(pos)
+            object.scale.set(0.25, 0.25, 0.25)
+            object.lookAt(0, 0, 0)
+
+            object.rotation.y = Math.PI 
+            object.rotation.z = Math.PI * 1.5
+            
+            scene.add(object)
+
+            console.log(object)
+            console.log(pos)
+
+        }, 
+        (xhr) => {
+
+            console.log((xhr.loaded/ xhr.total * 100) + '% loaded')
+
+        },
+        (error) => {
+            
+            console.log('An error occurred while loading the gLTF:', error)
+
+        }
+    )
 }
 
 
@@ -183,7 +195,7 @@ function animate(time) {
 
     controls.update()
     renderer.render(scene, camera)
-    sphere.rotation.y = time / 10000
+    sphere.rotation.y = ( time / 86400000 ) * 1000
     stars.position.copy(camera.position)
 
 }
