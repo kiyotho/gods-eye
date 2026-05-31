@@ -1,10 +1,12 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js'
+// import { directPointLight } from 'three/src/nodes/lighting/PointLightNode.js'
 
+
+// setting up scene
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000 )
-
-
 
 
 
@@ -17,6 +19,15 @@ camera.position.set(0, 5, 10)
 controls.update()
 
 
+
+
+
+
+
+
+
+
+// making earth
 const geometry = new THREE.SphereGeometry(5, 32, 32)
 const loader = new THREE.TextureLoader()
 const texture = loader.load('./earthlights1k.jpg')
@@ -28,13 +39,30 @@ const material = new THREE.MeshPhongMaterial({
 
 })
 
-
 const sphere = new THREE.Mesh( geometry, material )
+
+
+// making ambient lights
 const ambientLight = new THREE.AmbientLight(0xffffff, 1)
+
+
+// making directional lights
+const direcitonalLight = new THREE.DirectionalLight(0xffffff, 1)
+direcitonalLight.position.set(5, 10, 75)
+scene.add(direcitonalLight)
+
+
+// adding both to the scene
 scene.add(ambientLight)
 scene.add( sphere )
 
 
+
+
+
+
+
+// making wireframe around the earth
 const wireFrame = new THREE.WireframeGeometry( geometry )
 const wireMaterial = new THREE.LineBasicMaterial({ 
     color: 0x0088ff, 
@@ -42,12 +70,15 @@ const wireMaterial = new THREE.LineBasicMaterial({
     opacity: 0.1 
 })
 const wire = new THREE.LineSegments(wireFrame, wireMaterial)
-scene.add(wire)
-
-
+scene.add(wire) // adding wireframe to the scene
 
 camera.position.z = 9
 
+
+
+
+
+// making another sphere and placing it around earth
 const glowGeometry = new THREE.SphereGeometry(5.15, 32, 32)
 const glowMaterial = new THREE.MeshPhongMaterial({
 
@@ -58,6 +89,14 @@ const glowMaterial = new THREE.MeshPhongMaterial({
 
 })
 
+const glow = new THREE.Mesh(glowGeometry, glowMaterial)
+
+scene.add(glow) // adding sudosphere used for glow to the scene
+
+
+
+
+// making stars
 const starGeometry = new THREE.BufferGeometry()
 const starCount = 10000
 const positions = new Float32Array(starCount * 3)
@@ -73,6 +112,10 @@ scene.add(stars)
 
 
 
+
+
+
+// function to convert latitude and longitude data to vectors
 function latLngToVector3(lat, lng, radius){
     const phi = (90 - lat) * (Math.PI / 180)
     const theta = (lng + 180) * (Math.PI / 180)
@@ -85,7 +128,7 @@ function latLngToVector3(lat, lng, radius){
 }
 
 
-
+// random data of cities
 const cities = [
     { name: 'New York', lat: 40.7128, lng: -74.0060 },
     { name: 'London', lat: 51.5074, lng: -0.1278 },
@@ -94,6 +137,7 @@ const cities = [
     { name: 'Meerut', lat: 28.9845, lng: 77.7064 },
 ]
 
+//placing a dot over the cities
 cities.forEach(city => {
     const pos = latLngToVector3(city.lat, city.lng, 5.05)
     const dotGeometry = new THREE.SphereGeometry(0.025, 8, 15)
@@ -104,9 +148,29 @@ cities.forEach(city => {
 })
 
 
-const glow = new THREE.Mesh(glowGeometry, glowMaterial)
 
-scene.add(glow)
+const gltfLoader = new GLTFLoader()
+
+gltfLoader.load(
+    './satellite/scene.gltf', 
+    (gltf) => {
+        const satellite = gltf.scene
+        satellite.position.set(5.3 , 0 , 0)
+        satellite.scale.set(0.5, 0.5, 0.5)
+        // satellite.rotation.x = Math.PI / 2  // 90 degrees
+        satellite.rotation.y = Math.PI     // 180 degrees
+        scene.add(satellite)
+    }, 
+    (xhr) => {
+        console.log((xhr.loaded/ xhr.total * 100) + '% loaded')
+    },
+    (error) => {
+        console.log('An error occurred while loading the gLTF:', error)
+    }
+)
+
+
+// function to animate the scene
 
 function animate(time) {
 
@@ -117,5 +181,7 @@ function animate(time) {
 
 }
 
+
+// sets animation loop on a function
 renderer.setAnimationLoop( animate )
 
