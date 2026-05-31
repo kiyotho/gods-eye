@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js'
-import { satellites } from './data/satelliteData.js'
+// import { satellites } from './data/satelliteData.js'
 // import { directPointLight } from 'three/src/nodes/lighting/PointLightNode.js'
 
 
@@ -16,6 +16,7 @@ renderer.setSize( window.innerWidth, window.innerHeight)
 document.body.appendChild( renderer.domElement )
 
 const controls = new OrbitControls(camera, renderer.domElement)
+controls.zoomToCursor = true
 camera.position.set(0, 5, 10)
 controls.update()
 
@@ -114,7 +115,7 @@ scene.add(stars)
 
 
 
-// function to convert latitude and longitude data to vectors
+// function to convert latitude and longitude data to vectors 
 function latLngToVector3(lat, lng, radius){
     const phi = (90 - lat) * (Math.PI / 180)
     const theta = (lng + 180) * (Math.PI / 180)
@@ -151,43 +152,42 @@ const satelliteArr = []
 
 const gltfLoader = new GLTFLoader()
 
+const responce = await fetch('http://localhost:8000/getsatellite')
+const satelliteData = await responce.json()
 
 gltfLoader.load(
   './satellite/scene.gltf',
 
     (gltf) => {
 
-    for(const satellite of satellites){
+    for (const satellite of satelliteData.message){
 
         const object = gltf.scene.clone()
 
-        const sceneRadius = (6371 + satellite.altitude) * (5 / 6371)
-        const pos = latLngToVector3(satellite.inclination, satellite.startAngle, sceneRadius)
+        const sceneRadius = (6371 + satellite.satalt) * (5 / 6371)
+        const pos = latLngToVector3(satellite.satlat, satellite.satlng, sceneRadius)
         object.position.copy(pos)
-        object.scale.set(0.25, 0.25, 0.25)
+        object.scale.set(0.4, 0.4, 0.4)
         object.lookAt(0, 0, 0)
-
-        object.rotation.y = Math.PI 
-        object.rotation.z = Math.PI * 1.5
         
         const points = []
         for(let angle = 0; angle <= 360; angle += 1){
-            const point = latLngToVector3(satellite.inclination, angle, sceneRadius)
+            const point = latLngToVector3(satellite.satlat, angle, sceneRadius)
             points.push(point)
         }
         const orbitGeometry = new THREE.BufferGeometry().setFromPoints(points)
 
         const orbitMaterial = new THREE.LineDashedMaterial({
             color: "#9A813C",
-            dashSize: 0.2,
-            gapSize: 0.05
+            dashSize: 0.09,
+            gapSize: 0.53
         })
         const orbit = new THREE.Line(orbitGeometry, orbitMaterial)
         orbit.computeLineDistances()
 
         scene.add(orbit)
         scene.add(object)
-        satelliteArr.push({ mesh: object, data: satellite, currentAngle: satellite.startAngle, altitude: sceneRadius })
+        satelliteArr.push({ mesh: object, data: satellite, currentAngle: satellite.satlng, altitude: satellite.satalt })
 
 
     }}, 
@@ -217,17 +217,17 @@ function animate(time) {
     renderer.render(scene, camera)
     sphere.rotation.y = ( time / 86400000 ) * 1000
 
-    const delta = time - lastTime
-    lastTime = time
+    // const delta = time - lastTime
+    // lastTime = time
 
-    for(const satellite of satelliteArr){
+    // for(const satellite of satelliteArr){
 
-        satellite.currentAngle += satellite.data.speed * delta
+    //     // satellite.currentAngle += satellite.data.speed * delta * satellite.data.direction
 
-        const newPos = latLngToVector3(satellite.data.inclination, satellite.currentAngle , satellite.altitude)
+    //     const newPos = latLngToVector3(satellite.data.inclination, satellite.currentAngle , satellite.altitude)
 
-        satellite.mesh.position.copy(newPos)
-    }
+    //     satellite.mesh.position.copy(newPos)
+    // }
 
     stars.position.copy(camera.position)
 
