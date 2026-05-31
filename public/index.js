@@ -155,6 +155,7 @@ const gltfLoader = new GLTFLoader()
 const responce = await fetch('http://localhost:8000/getsatellite')
 const satelliteData = await responce.json()
 
+
 gltfLoader.load(
   './satellite/scene.gltf',
 
@@ -164,17 +165,15 @@ gltfLoader.load(
 
         const object = gltf.scene.clone()
 
-        const sceneRadius = (6371 + satellite.satalt) * (5 / 6371)
-        const pos = latLngToVector3(satellite.satlat, satellite.satlng, sceneRadius)
+        const sceneRadius = (6371 + 20200) * (5 / 6371)
+        const pos = latLngToVector3(satellite.INCLINATION, satellite.MEAN_ANOMALY, sceneRadius)
         object.position.copy(pos)
         object.scale.set(0.4, 0.4, 0.4)
         object.lookAt(0, 0, 0)
         
-        const points = []
-        for(let angle = 0; angle <= 360; angle += 1){
-            const point = latLngToVector3(satellite.satlat, angle, sceneRadius)
-            points.push(point)
-        }
+
+        const orbitCurve = new THREE.EllipseCurve(0, 0, sceneRadius, sceneRadius, 0, Math.PI * 2)
+        const points = orbitCurve.getPoints(128)
         const orbitGeometry = new THREE.BufferGeometry().setFromPoints(points)
 
         const orbitMaterial = new THREE.LineDashedMaterial({
@@ -184,6 +183,12 @@ gltfLoader.load(
         })
         const orbit = new THREE.Line(orbitGeometry, orbitMaterial)
         orbit.computeLineDistances()
+
+        orbit.rotation.order = 'ZXY'
+
+        orbit.rotation.x = Math.PI / 2
+        orbit.rotation.z = satellite.INCLINATION * (Math.PI / 180)
+        orbit.rotation.y = satellite.RA_OF_ASC_NODE * (Math.PI / 180)
 
         scene.add(orbit)
         scene.add(object)

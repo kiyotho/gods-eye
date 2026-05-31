@@ -19,10 +19,10 @@ app.use((req, res, next) => {
 })
 
 app.get('/getsatellite', async(req, res) => {
-    const responce = await fetch(`https://api.n2yo.com/rest/v1/satellite/above/0/0/400/180/20/&apiKey=${process.env.N2YO_API_KEY}`)
+    const responce = await fetch(`https://celestrak.org/NORAD/elements/gp.php?GROUP=gps-ops&FORMAT=json`)
     const satelliteData = await responce.json()
 
-    res.status(200).json({message : satelliteData.above})
+    res.status(200).json({message : satelliteData})
 }) 
 
 
