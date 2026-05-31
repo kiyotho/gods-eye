@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js'
+import { satellites } from './data/satelliteData.js'
 // import { directPointLight } from 'three/src/nodes/lighting/PointLightNode.js'
 
 
@@ -151,15 +152,20 @@ cities.forEach(city => {
 
 const gltfLoader = new GLTFLoader()
 
-gltfLoader.load(
-    './satellite/scene.gltf', 
+for(const satellite of satellites){
+    gltfLoader.load(
+    './satellite/scene.gltf',
+
     (gltf) => {
-        const satellite = gltf.scene
-        satellite.position.set(5.3 , 0 , 0)
-        satellite.scale.set(0.5, 0.5, 0.5)
-        // satellite.rotation.x = Math.PI / 2  // 90 degrees
-        satellite.rotation.y = Math.PI     // 180 degrees
-        scene.add(satellite)
+        const object = gltf.scene
+        object.position.set(5.5 , 0 , 0)
+        object.scale.set(0.2, 0.2, 0.2)
+        object.lookAt(0, 0, 0)
+        // object.rotation.x = Math.PI / 8
+        object.rotation.y = Math.PI 
+        object.rotation.z = Math.PI * 1.5
+        
+        scene.add(object)
     }, 
     (xhr) => {
         console.log((xhr.loaded/ xhr.total * 100) + '% loaded')
@@ -168,6 +174,7 @@ gltfLoader.load(
         console.log('An error occurred while loading the gLTF:', error)
     }
 )
+}
 
 
 // function to animate the scene
