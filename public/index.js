@@ -30,7 +30,7 @@ controls.update()
 // making earth
 const geometry = new THREE.SphereGeometry(5, 32, 32)
 const loader = new THREE.TextureLoader()
-const texture = loader.load('./earthlights1k.jpg')
+const texture = loader.load('./src/earthlights1k.jpg')
 const material = new THREE.MeshPhongMaterial({ 
     map: texture,
     transparent: true, 

@@ -25,5 +25,6 @@ app.get('/getsatellite', async(req, res) => {
     res.status(200).json({message : satelliteData})
 }) 
 
+app.use(express.static('public'))
 
 app.listen(PORT, () => console.log(`Server listening at Port: ${PORT}`))

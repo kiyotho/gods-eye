@@ -1,10 +1,10 @@
 @font-face {
     font-family: "bio-sans-light";
-    src: url("./bio-sans-light.ttf") format('truetype');
+    src: url("./src/bio-sans-light.ttf") format('truetype');
 }
 @font-face {
     font-family: 'bio-sans-bold';
-    src : url("./bio-sans-bold.ttf") format('truetype')
+    src : url("./src/bio-sans-bold.ttf") format('truetype')
 }
 
 body{
